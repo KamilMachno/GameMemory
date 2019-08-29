@@ -5,8 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Memory"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="500" Width="900">
+    <DockPanel>
+        <Grid DockPanel.Dock="Left" Width="200">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Label>Memory game</Label>
+            <Button Click="Gamebtn" Width="100" Height="50" Grid.Column="0" Grid.Row="1">New game</Button>
+        </Grid>
+        <Grid DockPanel.Dock="Right" Width="700" x:Name="Board_grid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button Click="Cardbtn" Grid.Column="0" Grid.Row="0" />
+            <Button Click="Cardbtn" Grid.Column="1" Grid.Row="0" />
+            <Button Click="Cardbtn" Grid.Column="2" Grid.Row="0" />
+            <Button Click="Cardbtn" Grid.Column="3" Grid.Row="0" />
+            <Button Click="Cardbtn" Grid.Column="4" Grid.Row="0" />
+
+            <Button Click="Cardbtn" Grid.Column="0" Grid.Row="1" />
+            <Button Click="Cardbtn" Grid.Column="1" Grid.Row="1" />
+            <Button Click="Cardbtn" Grid.Column="2" Grid.Row="1" />
+            <Button Click="Cardbtn" Grid.Column="3" Grid.Row="1" />
+            <Button Click="Cardbtn" Grid.Column="4" Grid.Row="1" />
+
+            <Button Click="Cardbtn" Grid.Column="0" Grid.Row="2" />
+            <Button Click="Cardbtn" Grid.Column="1" Grid.Row="2" />
+            <Button Click="Cardbtn" Grid.Column="2" Grid.Row="2" />
+            <Button Click="Cardbtn" Grid.Column="3" Grid.Row="2" />
+            <Button Click="Cardbtn" Grid.Column="4" Grid.Row="2" />
+
+            <Button Click="Cardbtn" Grid.Column="0" Grid.Row="3" />
+            <Button Click="Cardbtn" Grid.Column="1" Grid.Row="3" />
+            <Button Click="Cardbtn" Grid.Column="2" Grid.Row="3" />
+            <Button Click="Cardbtn" Grid.Column="3" Grid.Row="3" />
+            <Button Click="Cardbtn" Grid.Column="4" Grid.Row="3" />
+
+
+        </Grid>
+    </DockPanel>
+   
 </Window>
