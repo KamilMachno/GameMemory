@@ -55,6 +55,7 @@ namespace Memory
         {
             var random = new Random();
             signs = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' };
+            cardTypes = new CardType[20];
 
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
@@ -62,7 +63,8 @@ namespace Memory
                 button.Content = signs[current];
                 signs.RemoveAt(current);
                 button.Background = Brushes.White;
-                button.Foreground = button.Background;
+                button.Foreground = Brushes.Red;
+                button.IsEnabled = true;
             });
         }
         /// <summary>
@@ -82,6 +84,7 @@ namespace Memory
                     button.Foreground = button.Background;
                 }
             });
+            
         }
 
         /// <summary>
@@ -89,9 +92,12 @@ namespace Memory
         /// </summary>
         private void CheckHit()
         {
+            //lista z kliknietymi buttonami (dlugosc listy 2 elementy)
             List<Button> hittedbtn = new List<Button>();
+            //lista z indeksami kliknietcyh buttonow w CardTypes (dlugosc listy 2 elementy)
             List<int> cards = new List<int>();
 
+            //Wyszukiwanie kliknietych buttonow
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
                 var column = Grid.GetColumn(button);
@@ -104,21 +110,42 @@ namespace Memory
                 }
             });
 
+            //Sprawdzanie czy wyswietlone karty sa takie same 
             if(hittedbtn.Count == 2)
-            {
-                
-                if (hittedbtn[0] == hittedbtn[1])
-                {
+            {            
+                if (hittedbtn[0].Content.ToString() == hittedbtn[1].Content.ToString() && cards[0]!=cards[1])
+                {                
                     cardTypes[cards[0]] = CardType.hit;
                     cardTypes[cards[1]] = CardType.hit;
+                    hittedbtn[0].IsEnabled = false;
+                    hittedbtn[1].IsEnabled = false;
                 }
+
+                
             }
-
-            RefreshPlay();
+            //Odswiezenie widoku planszy
+           
             
- 
 
+        }
 
+        private string GameStatus()
+        {
+            //ilosc trafionych elementow
+            int hittedCount = 0;
+
+            for (int i = 0; i < cardTypes.Length; i++)
+            {
+                if(cardTypes[i]==CardType.hit)
+                    hittedCount++;
+            }
+            Console.WriteLine(hittedCount);
+            Console.WriteLine(cardTypes.Length);
+            if (hittedCount == cardTypes.Length)
+                return "Koniec gry!";
+            else
+                return "0";
+             
         }
         
 
@@ -134,7 +161,12 @@ namespace Memory
             if (move1)
             {
                 CheckHit();
+                RefreshPlay();
             }
+            GameStatus();
+
+
+
             move1 ^= true;
 
             Button bt1 = (Button)sender;
