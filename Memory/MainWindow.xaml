@@ -6,7 +6,29 @@
         xmlns:local="clr-namespace:Memory"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="900">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
     <DockPanel>
+        
         <Grid DockPanel.Dock="Left" Width="200">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -20,6 +42,7 @@
             <Button Click="Gamebtn" Width="100" Height="50" Grid.Column="0" Grid.Row="1">New game</Button>
         </Grid>
         <Grid DockPanel.Dock="Right" Width="700" x:Name="Board_grid">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -33,6 +56,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
+
             <Button Click="Cardbtn" Grid.Column="0" Grid.Row="0" />
             <Button Click="Cardbtn" Grid.Column="1" Grid.Row="0" />
             <Button Click="Cardbtn" Grid.Column="2" Grid.Row="0" />
