@@ -63,15 +63,17 @@ namespace Memory
                 button.Content = signs[current];
                 signs.RemoveAt(current);
                 button.Background = Brushes.White;
-                button.Foreground = Brushes.Red;
+                button.Foreground = Brushes.White;
                 button.IsEnabled = true;
             });
         }
+
         /// <summary>
-        /// Resetowanie planszy
+        /// Odsiwezanie planszy z zachowaniem odkrytych par
         /// </summary>
         private void RefreshPlay()
         {
+           
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
                 var column = Grid.GetColumn(button);
@@ -79,25 +81,25 @@ namespace Memory
 
                 if (cardTypes[column + row * 5] == CardType.click)
                 {
-                    cardTypes[column + row * 5] = CardType.free;
+                    cardTypes[column + row * 5] = CardType.signed;           
                     button.Background = Brushes.White;
-                    button.Foreground = button.Background;
+                    button.Foreground = Brushes.White;
                 }
             });
-            
+
+
         }
 
         /// <summary>
-        /// Sprawdzanie czy zostala odkryta para takich samych znakow
+        /// Sprawdzanie czy zostala odkryta para
         /// </summary>
         private void CheckHit()
         {
             //lista z kliknietymi buttonami (dlugosc listy 2 elementy)
-            List<Button> hittedbtn = new List<Button>();
+            List<Button> hittedbtn = new List<Button>(2);
             //lista z indeksami kliknietcyh buttonow w CardTypes (dlugosc listy 2 elementy)
-            List<int> cards = new List<int>();
+            List<int> cards = new List<int>(2);
 
-            //Wyszukiwanie kliknietych buttonow
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
                 var column = Grid.GetColumn(button);
@@ -110,22 +112,18 @@ namespace Memory
                 }
             });
 
-            //Sprawdzanie czy wyswietlone karty sa takie same 
-            if(hittedbtn.Count == 2)
-            {            
-                if (hittedbtn[0].Content.ToString() == hittedbtn[1].Content.ToString() && cards[0]!=cards[1])
-                {                
+            if (hittedbtn.Count == 2)
+            {
+                if ((hittedbtn[0].Content.ToString() == hittedbtn[1].Content.ToString()) && (cards[0] != cards[1]))
+                {
+                    //zmiana typu karty na trafiona
                     cardTypes[cards[0]] = CardType.hit;
                     cardTypes[cards[1]] = CardType.hit;
+                    //zablokowanie klikania kart
                     hittedbtn[0].IsEnabled = false;
                     hittedbtn[1].IsEnabled = false;
                 }
-
-                
             }
-            //Odswiezenie widoku planszy
-           
-            
 
         }
 
@@ -157,28 +155,25 @@ namespace Memory
 
         private void Cardbtn(object sender, RoutedEventArgs e)
         {
-            //Wyswietlenia tylko 2 elementow 
-            if (move1)
+            //Sprawdzanie trafienia i odsiwezanie planszy co 2 ruchy
+            if(move1)
             {
                 CheckHit();
                 RefreshPlay();
             }
-            GameStatus();
-
-
-
             move1 ^= true;
-
+            
+           //Klikniety button
             Button bt1 = (Button)sender;
 
             //Wspolzedne kliknietego button
             var column = Grid.GetColumn(bt1);
+
             var row = Grid.GetRow(bt1);
 
             cardTypes[column + row * 5] = CardType.click;
 
             bt1.Background = Brushes.Gray;
-            
 
         }
     }
