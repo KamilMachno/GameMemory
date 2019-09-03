@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Memory
 {
@@ -50,12 +51,15 @@ namespace Memory
             });
         }
 
-        //Przypisywanie znakow do losowych kart
+        /// <summary>
+        /// Przypisywanie znakow do losowych kart
+        /// </summary>
         private void RandomInit()
         {
             var random = new Random();
             signs = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' };
             cardTypes = new CardType[20];
+            move1 = true;
 
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
@@ -63,7 +67,7 @@ namespace Memory
                 button.Content = signs[current];
                 signs.RemoveAt(current);
                 button.Background = Brushes.White;
-                button.Foreground = Brushes.White;
+                button.Foreground = Brushes.Red;
                 button.IsEnabled = true;
             });
         }
@@ -112,6 +116,8 @@ namespace Memory
                 }
             });
 
+            //Przy pierwszym ruchu w nowej grze hittedbtn.Count = 0
+            //Przy przypadku dwukrotnego klikniecia w taka sama karte hittedbtn.Count = 1
             if (hittedbtn.Count == 2)
             {
                 if ((hittedbtn[0].Content.ToString() == hittedbtn[1].Content.ToString()) && (cards[0] != cards[1]))
@@ -122,48 +128,96 @@ namespace Memory
                     //zablokowanie klikania kart
                     hittedbtn[0].IsEnabled = false;
                     hittedbtn[1].IsEnabled = false;
+                    
                 }
+                
+                    
+
             }
+           
 
         }
 
-        private string GameStatus()
+        private void GameStatus()
         {
             //ilosc trafionych elementow
-            int hittedCount = 0;
+            int hittedCount = 2; //zalozenie, ze na poczatku trafiono pare, aby licznik prawidlowo funkcjionowal
 
             for (int i = 0; i < cardTypes.Length; i++)
             {
                 if(cardTypes[i]==CardType.hit)
                     hittedCount++;
             }
-            Console.WriteLine(hittedCount);
-            Console.WriteLine(cardTypes.Length);
+            
+            //Dialog YES/ NO po zakonczonej grze  
             if (hittedCount == cardTypes.Length)
-                return "Koniec gry!";
-            else
-                return "0";
-             
-        }
-        
+            {
+                string box_msg = "Koniec gry! Rozpocząć nową grę?";
 
+                string box_title = "Koniec gry";
+
+                var selectedOption = MessageBox.Show(box_msg, box_title, MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (selectedOption == MessageBoxResult.Yes)
+                {
+                    //Rozpoczecie gry od nowa
+                    NewGame();
+                    RandomInit();
+                }
+                    
+                else
+                    //Zamkniecie dialogu wraz z apliakcja
+                    this.Close();
+            }
+        }
+
+        public void Timer()
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += timer_Tick;
+            timer.Start();
+        }
+
+        public void timer_Tick(object sender, EventArgs e)
+        {
+            TimerLbl.Content = DateTime.Now.ToString("mm:ss");
+        }
+
+        /// <summary>
+        /// Przypisanie znakow do kart / nowa gra
+        /// </summary>
         private void Gamebtn(object sender, RoutedEventArgs e)
         {
             RandomInit();
-
+            Timer();
+           
         }
 
         private void Cardbtn(object sender, RoutedEventArgs e)
         {
+            
+
             //Sprawdzanie trafienia i odsiwezanie planszy co 2 ruchy
-            if(move1)
+            //Przy pierwszym ruchu w nowej grze warunek spełniony
+            if (move1)
             {
+                
                 CheckHit();
                 RefreshPlay();
+         
+            }
+            //Co drugi ruch sprawdzane czy jest wygrana
+            else
+            {
+                GameStatus();
+               
             }
             move1 ^= true;
-            
-           //Klikniety button
+
+           
+
+            //Klikniety button
             Button bt1 = (Button)sender;
 
             //Wspolzedne kliknietego button
@@ -174,6 +228,8 @@ namespace Memory
             cardTypes[column + row * 5] = CardType.click;
 
             bt1.Background = Brushes.Gray;
+
+           
 
         }
     }
