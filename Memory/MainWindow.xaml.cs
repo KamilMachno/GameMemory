@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +25,9 @@ namespace Memory
     {
         private CardType[] cardTypes;
         private bool move1 = true;
+
+        //Aktualny czas na stoperze
+        string currentTime = string.Empty;
 
         //lista znakow, ktore beda na kartach
         private List<char> signs;
@@ -60,6 +65,7 @@ namespace Memory
             signs = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j' };
             cardTypes = new CardType[20];
             move1 = true;
+            currentTime = string.Empty;
 
             Board_grid.Children.Cast<Button>().ToList().ForEach(button =>
             {
@@ -152,7 +158,7 @@ namespace Memory
             //Dialog YES/ NO po zakonczonej grze  
             if (hittedCount == cardTypes.Length)
             {
-                string box_msg = "Koniec gry! Rozpocząć nową grę?";
+                string box_msg = "Koniec gry! Twój wynik: "+stopWatch()+". Rozpocząć nową grę?";
 
                 string box_title = "Koniec gry";
 
@@ -162,7 +168,6 @@ namespace Memory
                 {
                     //Rozpoczecie gry od nowa
                     NewGame();
-                    RandomInit();
                 }
                     
                 else
@@ -171,18 +176,56 @@ namespace Memory
             }
         }
 
+        /// <summary>
+        /// Obsluga stopera 
+        /// </summary>
+        DispatcherTimer dispatcherTimer;
+        Stopwatch stopWt;
+   
+
         public void Timer()
         {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += timer_Tick;
-            timer.Start();
+            dispatcherTimer = new DispatcherTimer();
+            stopWt = new Stopwatch();
+            dispatcherTimer.Tick += new EventHandler(countingTime);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+         
+            startWatch();
         }
 
-        public void timer_Tick(object sender, EventArgs e)
+        void countingTime(object sender, EventArgs e)
         {
-            TimerLbl.Content = DateTime.Now.ToString("mm:ss");
+            if (stopWt.IsRunning)
+            {
+                TimeSpan ts = stopWt.Elapsed;
+                currentTime = String.Format("{0:00}:{1:00}:{2:00}",
+                ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+               TimerLbl.Content = currentTime;
+            }
         }
+
+        //Rozpoczecie liczenie
+        public void startWatch()
+        {
+            stopWt.Start();
+            dispatcherTimer.Start();
+        }
+
+        //Zatrzymanie liczenia
+        public string stopWatch()
+        {
+            if (stopWt.IsRunning)
+            {
+                stopWt.Stop();
+                return currentTime;
+            }
+            else
+                return "Error";
+           
+
+        }
+
 
         /// <summary>
         /// Przypisanie znakow do kart / nowa gra
@@ -191,7 +234,6 @@ namespace Memory
         {
             RandomInit();
             Timer();
-           
         }
 
         private void Cardbtn(object sender, RoutedEventArgs e)
@@ -210,8 +252,7 @@ namespace Memory
             //Co drugi ruch sprawdzane czy jest wygrana
             else
             {
-                GameStatus();
-               
+                GameStatus();               
             }
             move1 ^= true;
 

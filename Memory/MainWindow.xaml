@@ -39,8 +39,8 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Label>Memory game</Label>
-            <Button Click="Gamebtn" Width="100" Height="50" Grid.Column="0" Grid.Row="1">New game</Button>
-            <Label Grid.Column="0" Width="100" Height="50"  Grid.Row="3" x:Name="TimerLbl">Timer 22:00:00</Label>
+            <Button Click="Gamebtn" Width="100" Height="50" Grid.Column="0" Grid.Row="1">Start</Button>
+            <Label Grid.Column="0" Width="100" Height="50"  Grid.Row="3" x:Name="TimerLbl">00:00:00</Label>
         </Grid>
         <Grid DockPanel.Dock="Right" Width="700" x:Name="Board_grid">
             
